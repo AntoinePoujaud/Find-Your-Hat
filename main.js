@@ -1,9 +1,9 @@
 const prompt = require('prompt-sync')({sigint: true});
 
-const hat = '^';
-const hole = 'O';
-const fieldCharacter = '░';
-const pathCharacter = '*';
+const hat = '^ ';
+const hole = 'O ';
+const fieldCharacter = '░ ';
+const pathCharacter = '* ';
 
 class Field {
     constructor(field) {
@@ -33,22 +33,21 @@ class Field {
         }
         
         switch (this._field[nextMove[1]][nextMove[0]]) {
-            case '^':
-                console.log("congrats you found your hat - end of the game");
+            case '^ ':
+                console.log("Congrats you found your hat - end of the game");
                 break;
 
-            case 'O':
+            case 'O ':
                 console.log("You found a hole ... but now you are stuck sorry - end of the game");
                 break;
 
-            case '░':
-                this._field[nextMove[1]][nextMove[0]] = "*";
+            case '░ ':
+                this._field[nextMove[1]][nextMove[0]] = "* ";
                 this._currentPosition = nextMove;
                 this.print();
                 break;
 
-            case '*':
-                console.log(this.currentPosition);
+            case '* ':
                 this._currentPosition = nextMove;
                 break;
 
@@ -88,12 +87,20 @@ class Field {
         const areas = [hat, hole, fieldCharacter, pathCharacter];
         
         let randField = [];
-        
+        let counterHat = 0;
         for (let i = 0; i < height; i++) {
             let randRow = [];
             for (let j = 0; j < width; j++) {
-                let randomArea = Math.floor(Math.random() * 3.99);
+                let randomArea;
+                if (i === 0 && j === 0) {randomArea = 3}
+                else if (i === 0 && j === 0 || i === 0 && j === 1 || i === 0 && j === 2) {randomArea = 2;}
+                else {
+                    randomArea = Math.floor(Math.random() * 2.99);
+                }
+                while (areas[randomArea] === "^ " && counterHat > 0) {randomArea = Math.floor(Math.random() * 2.99);}
                 randRow.push(areas[randomArea]);
+                if (areas[randomArea] === "^ ") {counterHat++; }
+                
             }
             randField.push(randRow);
         }
@@ -110,5 +117,5 @@ const myField = new Field([
   ]);
   
 //   myField.print();
-const myRandField = Field.generateField(5, 2);
-console.log(myRandField);
+const myRandField = new Field(Field.generateField(10, 5));
+myRandField.print();
